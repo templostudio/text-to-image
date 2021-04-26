@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'nsw';
+    src: url('../text-to-image/NSW01.otf');
+    /* src: url('../NSW01.otf'); */
+}
+
+html, body {
+  height: 100%;
+  background-image: linear-gradient(#383838, black, #383838);
+}
+
+h1{
+  font-family: nsw;
+  font-size: 100px;
+  color : white;
+  text-align: center;
+}
+
+label{
+  color: white;
+}
+canvas {
+  border: 1px solid white;
+  display: inline;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0px;
+}
+
+.container {
+  max-width: 900px;
+}

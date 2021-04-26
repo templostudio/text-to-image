@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TEXT TO IMAGE</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<link href="style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>TEXT TO IMAGE</h1>
+		</div>
+
+		<div class="content text-center">
+			<div class="form-group">
+			    <textarea placeholder="Enter your text here" class="form-control" id="text" rows="2"></textarea>
+			</div>
+
+			<canvas id="textCanvas"></canvas>
+			
+			<div class="row align-items-center">
+				<div class="col-2">
+					<label for="textColor">Text Color</label>
+					<input type="color" id="textColor" value="#ed1b24" class="form-control" aria-describedby="color of the text">	
+				</div>
+
+				<div class="col">
+					<label for="textSize">Text Size</label>
+					<input type="range" id="textSize" class="form-control">
+				</div>
+
+				<div class="col-3">
+					<button type="button" onclick="downloadImage()" class="btn btn-block btn-primary">Download</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>		
+		var canvas = document.getElementById('textCanvas')
+		var ctx = canvas.getContext('2d')
+
+		var textArea = document.getElementById('text')
+		var textColor = document.getElementById('textColor')
+		var textSize = document.getElementById('textSize')
+
+		textArea.addEventListener('input', updateCanvas)
+		textColor.addEventListener('change', updateCanvas)
+		textSize.addEventListener('change', updateCanvas)
+
+		canvas.width = '1920'
+		canvas.height = '1080'
+
+		function updateCanvas()
+		{
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			let realSize = getRealSize(textSize.value)
+
+			ctx.font = realSize + "px nsw"
+			ctx.fillStyle = textColor.value
+			ctx.textAlign = "center"
+
+
+			let lineheight = realSize;
+			let lines = textArea.value.split('\n');
+
+			let y = getCanvasY(lineheight, lines.length)
+			
+			for (var i = 0; i<lines.length; i++)
+			    ctx.fillText(lines[i], canvas.width/2, y + (i*lineheight));	
+		}
+
+		function getCanvasY(_lineheight, _linesLenght)
+		{
+			let y = (canvas.height/2) - (_lineheight * (_linesLenght / 2))
+			if(_linesLenght % 2 != 0)
+				y+= _lineheight
+			else
+				y += _lineheight / 2
+
+			return y
+		}
+
+		function getRealSize(val)
+		{
+			let newMin = 10
+			let newMax = 500
+
+			let oldMin = 0
+			let oldMax = 100
+
+			return (((val - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin
+		}
+
+		function downloadImage()
+		{
+			image = canvas.toDataURL("image/png", 1.0).replace("image/png", "image/octet-stream");
+			var link = document.createElement('a');
+			link.download = "text.png";
+			link.href = image;
+			link.click();
+		}
+	</script>
+</body>
+</html>
